@@ -35,7 +35,7 @@ def main():
     for url in urls:
         url = url.strip().decode()
         if not url.startswith("http"):
-            break
+            continue
         score = stater.stat_website(url)
         print('{} consumption at {}'.format(url, score))
     stater.close()

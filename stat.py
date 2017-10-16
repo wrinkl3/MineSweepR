@@ -1,34 +1,45 @@
+import psutil
+import time
 from selenium import webdriver
-import psutil, time
+
 
 class SiteStater:
-	baseline_website = 'https://google.com/'
+    baseline_website = 'http://whatismyip.akamai.com'  # ეს უფრო სწრაფად იტვირთება ვიდრე Google
 
-	def stat_current(self):
-		return psutil.cpu_percent(interval=None)
+    @staticmethod
+    def stat_current():
+        return psutil.cpu_percent(interval=None)
 
-	def stat_website(self, site_url):
-		self.stat_current()
-		self.driver.get(site_url)
-		time.sleep(2)
-		after = self.stat_current()
-		self.driver.get(self.baseline_website)
-		return after
+    def stat_website(self, site_url):
+        self.stat_current()
+        self.driver.get(site_url)
+        time.sleep(5)  # CPU ბოლომდე რომ აიწიოს
+        after = self.stat_current()
+        self.driver.get(self.baseline_website)  # reset
 
-	def __init__(self):
-		self.driver = webdriver.PhantomJS()
-		self.driver.get(self.baseline_website)
-		self.stat_current() #initial call
+        return after
 
-	def close(self):
-		self.driver.close()
+    def __init__(self):
+        self.driver = webdriver.PhantomJS()
+        self.driver.get(self.baseline_website)  # initial
+
+    def close(self):
+        self.driver.close()
+
 
 def main():
-	urls = ['https://alibaba.com','http://npa.ge/Video/details/760/------', 'https://facebook.com']
-	stater = SiteStater()
-	for url in urls:
-		score = stater.stat_website(url)
-		print '{} consumption at {}'.format(url, score)
-	stater.close()
+    with open("./urls.list", "rb") as f:
+        urls = f.readlines()
+    stater = SiteStater()
 
-if __name__ == "__main__": main()
+    for url in urls:
+        url = url.strip().decode()
+        if not url.startswith("http"):
+            break
+        score = stater.stat_website(url)
+        print('{} consumption at {}'.format(url, score))
+    stater.close()
+
+
+if __name__ == "__main__":
+    main()

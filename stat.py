@@ -7,23 +7,32 @@ from operator import itemgetter
 class SiteStater:
     baseline_website = 'http://whatismyip.akamai.com'
 
-    @staticmethod
-    def stat_current():
-        return psutil.cpu_percent(interval=None)
+    def stat_current(self):
+        return self.process.cpu_percent(interval=None)
 
     def stat_website(self, site_url):
-        time.sleep(5)
         self.stat_current()
         self.driver.get(site_url)
         time.sleep(2)  # CPU ბოლომდე რომ აიწიოს
         after = self.stat_current()
-        self.driver.get(self.baseline_website)  # reset
+        self.close()
+        self.init_driver()
 
         return after
 
-    def __init__(self):
+    def init_driver(self):
         self.driver = webdriver.PhantomJS()
-        self.driver.get(self.baseline_website)  # initial
+        for child in psutil.Process().children():
+            if 'phantomjs' in child.name():
+                self.process = child
+                break
+
+    def go_to_baseline(self):
+        self.driver.get(self.baseline_website)
+    
+    def __init__(self):
+        self.init_driver()
+        self.go_to_baseline() # initial
 
     def close(self):
         self.driver.close()

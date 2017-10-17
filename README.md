@@ -4,10 +4,11 @@
 A Python 3 tool and library that scans websites for signs of abnormal CPU usage that might be indicative of embedded Javascript miners.
 
 ## Prerequisites
-Python 3   
-Selenium  
-psutil  
-PhantomJS  
+* Python 3   
+* Selenium  
+* psutil  
+* NumPy  
+* PhantomJS  
 
 ## Sweeper Usage
 The sweeper visits every website on a given list using a headless browser and checks the CPU usage on each of those websites. The readings are than analyzed using IQR and the outliers (websites with abnormally high CPU consumption) are outputted.  

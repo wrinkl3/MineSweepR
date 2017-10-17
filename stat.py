@@ -13,19 +13,24 @@ class SiteStater:
     def stat_website(self, site_url):
         self.stat_current()
         self.driver.get(site_url)
-        time.sleep(2)  # CPU ბოლომდე რომ აიწიოს
+        time.sleep(5)
         after = self.stat_current()
-        self.close()
-        self.init_driver()
+        #self.init_driver()
+        self.go_to_baseline()
 
         return after
 
     def init_driver(self):
+        if hasattr(self, 'driver'):
+            self.close()
+            self.process = None
         self.driver = webdriver.PhantomJS()
         for child in psutil.Process().children():
             if 'phantomjs' in child.name():
                 self.process = child
                 break
+        if not hasattr(self, 'process') or self.process is None:
+            raise Error('Failed to launch PhantomJS')
 
     def go_to_baseline(self):
         self.driver.get(self.baseline_website)
@@ -43,15 +48,6 @@ def main():
         urls = [url.strip().decode() for url in f.readlines() if url.startswith(b'http')]
     stater = SiteStater()
 
-    '''
-    for url in urls:
-        url = url.strip().decode()
-        if not url.startswith("http"):
-            continue
-        score = stater.stat_website(url)
-        print('{} consumption at {}'.format(url, score))
-    stater.close()
-    '''
     scores = [stater.stat_website(url) for url in urls]
     print(scores)
     indices = upper_outlier_indices(scores, 0.5)

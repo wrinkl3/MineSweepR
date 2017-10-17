@@ -21,7 +21,7 @@ class SiteStater:
         return after
 
     def init_driver(self):
-        self.driver = webdriver.PhantomJS()
+	self.driver = webdriver.PhantomJS()
         for child in psutil.Process().children():
             if 'phantom' in child.name():  # 'geckodriver' for firefox
                 self.process = child
@@ -30,6 +30,8 @@ class SiteStater:
             raise Exception('Failed to launch PhantomJS')
 
     def __init__(self):
+	self.driver = None
+	self.process = None
         self.baseline_website = 'http://whatismyip.akamai.com'
 
     def close(self):

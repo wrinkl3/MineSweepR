@@ -5,7 +5,6 @@ def find_upper_outliers(data, m=1.5):
     iqr = quartile_3 - quartile_1
     lower_bound = quartile_1 - (iqr * m)
     upper_bound = quartile_3 + (iqr * m)
-    print(upper_bound)
     return np.where((data > upper_bound))
 
 def upper_outlier_indices(data, m=1.5):

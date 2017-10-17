@@ -1,7 +1,7 @@
 # MineSweepR
 (tentatively named)
 
-A Python 3 tool and library that scans websites for signs of abnormal CPU usage that might be indicative of embedded Javascript miners.
+A Python 3 tool and library that scans websites for signs of abnormal CPU usage which might be indicative of embedded Javascript miners.
 
 ## Prerequisites
 * Python 3   

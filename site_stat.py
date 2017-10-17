@@ -13,15 +13,19 @@ class SiteStater:
         self.init_driver()
         self.go_to_baseline()
         self.stat_current()
-        self.driver.get(site_url)
-        time.sleep(2)
-        after = self.stat_current()
-        self.close()
-
-        return after
+        try:
+            self.driver.get(site_url)
+            time.sleep(5)
+            after = self.stat_current()
+        except:
+            after = None
+        finally:
+            self.close()
+            return after
 
     def init_driver(self):
         self.driver = webdriver.PhantomJS()
+        self.driver.set_page_load_timeout(60)
         for child in psutil.Process().children():
             if 'phantom' in child.name():  # 'geckodriver' for firefox
                 self.process = child
